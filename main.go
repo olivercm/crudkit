@@ -5,23 +5,26 @@ import (
 )
 
 var dirs = []string{
-	"../curdkit/client/dao",
-	"../curdkit/client/model",
-	"../curdkit/client/schemas",
+	"../crudkit/client/schemas",
 
-	"../curdkit/server/api",
-	"../curdkit/server/dao",
-	"../curdkit/server/model",
-	"../curdkit/server/service",
+	"../crudkit/server/api",
+	"../crudkit/server/dao",
+	"../crudkit/server/model",
+	"../crudkit/server/service",
 }
 
-var protoPath = fmt.Sprintf("../curdkit/server/api/%s.proto", tableName)
+var protoPath = fmt.Sprintf("../crudkit/server/api/%s.proto", tableName)
 
-var schemaPath = fmt.Sprintf("../curdkit/client/schemas/%s_schema_impl.go", tableName)
+var schemaPath = fmt.Sprintf("../crudkit/client/schemas/%s_schema_impl.go", tableName)
 
 var tableName = "user"
 
 func main() {
+
+	//先清理原有的项目结构
+
+
+
 	//创建项目结构
 	//for _, dir := range dirs {
 	//	err := kit.MkdirAll(dir)
