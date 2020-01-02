@@ -12,17 +12,17 @@ type CustomerService struct {
 }
 
 func (s *CustomerService) GetUserList(ctx context.Context, req *pb.GetUserListReq) (*pb.GetUserListResp, error) {
-	users, err := s.dao.GetUserList(req.Current, req.PageSize)
+	datas, err := s.dao.GetUserList(req.Current, req.PageSize)
 	if err != nil {
 		return nil, err
 	}
 	resp := new(pb.GetUserListResp)
-	for _, user := range users {
+	for _, data := range datas {
 		resp.Result = append(resp.Result, &pb.UserListData{
-			Id:         user.ID,
-			Name:       user.Name,
-			Age:        user.Age,
-			CreateTime: user.CreateTime,
+			Id:         data.Id,
+			Name:       data.Name,
+			Age:        data.Age,
+			CreateTime: data.CreateTime,
 		})
 	}
 	return resp, nil
@@ -42,7 +42,7 @@ func (s *CustomerService) CreateUser(ctx context.Context, req *pb.CreateUserReq)
 
 func (s *CustomerService) UpdateUser(ctx context.Context, req *pb.UpdateUserReq) (*pb.UpdateUserResp, error) {
 	e := &model.User{
-		ID:   req.Id,
+		Id:   req.Id,
 		Name: req.Name,
 		Age:  req.Age,
 	}
@@ -54,7 +54,7 @@ func (s *CustomerService) UpdateUser(ctx context.Context, req *pb.UpdateUserReq)
 }
 
 func (s *CustomerService) DeleteUser(ctx context.Context, req *pb.DeleteUserReq) (*pb.DeleteUserResp, error) {
-	err := s.dao.DeleteUserByID(req.Id)
+	err := s.dao.DeleteUserById(req.Id)
 	if err != nil {
 		return nil, err
 	}

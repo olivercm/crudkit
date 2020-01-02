@@ -28,7 +28,7 @@ func (*UserDao) CreateUser(e *model.User) (*model.User, error) {
 func (*UserDao) UpdateUser(e *model.User) error {
 	err := db.Master().
 		Model(&model.User{}).
-		Where("id = ?", e.ID).
+		Where("id = ?", e.Id).
 		Update(map[string]interface{}{
 			"name":        e.Name,
 			"age":         e.Age,
@@ -37,7 +37,7 @@ func (*UserDao) UpdateUser(e *model.User) error {
 	return err
 }
 
-func (*UserDao) DeleteUserByID(id int64) error {
+func (*UserDao) DeleteUserById(id int64) error {
 	return db.Master().
 		Model(&model.User{}).
 		Where("id = ?", id).

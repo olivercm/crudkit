@@ -1,7 +1,7 @@
 package model
 
 type User struct {
-	ID         int64  `gorm:"id,AUTO_INCREMENT"`
+	Id         int64  `gorm:"id,AUTO_INCREMENT"`
 	Name       string `gorm:"column:name"`
 	Age        int64  `gorm:"column:age"`
 	CreateTime int64  `gorm:"column:create_time"`
