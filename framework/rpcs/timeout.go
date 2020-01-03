@@ -12,18 +12,6 @@ type rpcTimeout struct {
 	grpc.EmptyCallOption
 }
 
-func WithRPCTimeout(timeout time.Duration) grpc.DialOption {
-	return &rpcTimeout{
-		d: timeout,
-	}
-}
-
-func WithCallTimeout(timeout time.Duration) grpc.CallOption {
-	return &rpcTimeout{
-		d: timeout,
-	}
-}
-
 func dummyCancel() {
 }
 

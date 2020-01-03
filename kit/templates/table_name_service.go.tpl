@@ -7,11 +7,11 @@ import (
 	"crudkit/server/model"
 )
 
-type {{.Server}}Service struct {
+type {{.UCFirstServer}}Service struct {
 	dao dao.Dao
 }
 
-func (s *{{.Server}}Service) Get{{.Model}}List(ctx context.Context, req *pb.Get{{.Model}}ListReq) (*pb.Get{{.Model}}ListResp, error) {
+func (s *{{.UCFirstServer}}Service) Get{{.Model}}List(ctx context.Context, req *pb.Get{{.Model}}ListReq) (*pb.Get{{.Model}}ListResp, error) {
 	datas, err := s.dao.Get{{.Model}}List(req.Current, req.PageSize)
 	if err != nil {
 		return nil, err
@@ -28,7 +28,7 @@ func (s *{{.Server}}Service) Get{{.Model}}List(ctx context.Context, req *pb.Get{
 	return resp, nil
 }
 
-func (s *{{.Server}}Service) Create{{.Model}}(ctx context.Context, req *pb.Create{{.Model}}Req) (*pb.Create{{.Model}}Resp, error) {
+func (s *{{.UCFirstServer}}Service) Create{{.Model}}(ctx context.Context, req *pb.Create{{.Model}}Req) (*pb.Create{{.Model}}Resp, error) {
 	e := &model.{{.Model}}{
 		Name: req.Name,
 		Age:  req.Age,
@@ -40,7 +40,7 @@ func (s *{{.Server}}Service) Create{{.Model}}(ctx context.Context, req *pb.Creat
 	return &pb.Create{{.Model}}Resp{}, nil
 }
 
-func (s *{{.Server}}Service) Update{{.Model}}(ctx context.Context, req *pb.Update{{.Model}}Req) (*pb.Update{{.Model}}Resp, error) {
+func (s *{{.UCFirstServer}}Service) Update{{.Model}}(ctx context.Context, req *pb.Update{{.Model}}Req) (*pb.Update{{.Model}}Resp, error) {
 	e := &model.{{.Model}}{
 		Id:   req.Id,
 		Name: req.Name,
@@ -53,7 +53,7 @@ func (s *{{.Server}}Service) Update{{.Model}}(ctx context.Context, req *pb.Updat
 	return &pb.Update{{.Model}}Resp{}, nil
 }
 
-func (s *{{.Server}}Service) Delete{{.Model}}(ctx context.Context, req *pb.Delete{{.Model}}Req) (*pb.Delete{{.Model}}Resp, error) {
+func (s *{{.UCFirstServer}}Service) Delete{{.Model}}(ctx context.Context, req *pb.Delete{{.Model}}Req) (*pb.Delete{{.Model}}Resp, error) {
 	err := s.dao.Delete{{.Model}}ById(req.Id)
 	if err != nil {
 		return nil, err

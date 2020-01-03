@@ -1,8 +1,8 @@
 syntax = "proto3";
 
-package service.{{.LCFirstServer}};
+package service.{{.Server}};
 
-service {{.Server}}Service {
+service {{.UCFirstServer}}Service {
     rpc Get{{.Model}}List (Get{{.Model}}ListReq) returns (Get{{.Model}}ListResp);
     rpc Create{{.Model}} (Create{{.Model}}Req) returns (Create{{.Model}}Resp);
     rpc Update{{.Model}} (Update{{.Model}}Req) returns (Update{{.Model}}Resp);

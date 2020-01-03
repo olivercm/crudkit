@@ -6,11 +6,11 @@ import (
 	"time"
 )
 
-type UserDao struct {
+type {{.Model}}Dao struct {
 }
 
-func (*UserDao) GetUserList(page, pageSize int64) ([]*model.User, error) {
-	var ret []*model.User
+func (*{{.Model}}Dao) Get{{.Model}}List(page, pageSize int64) ([]*model.{{.Model}}, error) {
+	var ret []*model.{{.Model}}
 	err := db.Master().
 		Where("delete_time = 0").
 		Offset((page - 1) * pageSize).Limit(pageSize).
@@ -19,15 +19,15 @@ func (*UserDao) GetUserList(page, pageSize int64) ([]*model.User, error) {
 	return ret, err
 }
 
-func (*UserDao) CreateUser(e *model.User) (*model.User, error) {
+func (*{{.Model}}Dao) Create{{.Model}}(e *model.{{.Model}}) (*model.{{.Model}}, error) {
 	e.CreateTime = time.Now().Unix()
 	err := db.Master().Create(e).Error
 	return e, err
 }
 
-func (*UserDao) UpdateUser(e *model.User) error {
+func (*{{.Model}}Dao) Update{{.Model}}(e *model.{{.Model}}) error {
 	err := db.Master().
-		Model(&model.User{}).
+		Model(&model.{{.Model}}{}).
 		Where("id = ?", e.Id).
 		Update(map[string]interface{}{
 			"name":        e.Name,
@@ -37,9 +37,9 @@ func (*UserDao) UpdateUser(e *model.User) error {
 	return err
 }
 
-func (*UserDao) DeleteUserById(id int64) error {
+func (*{{.Model}}Dao) Delete{{.Model}}ById(id int64) error {
 	return db.Master().
-		Model(&model.User{}).
+		Model(&model.{{.Model}}{}).
 		Where("id = ?", id).
 		Update(map[string]interface{}{
 			"delete_time": time.Now().Unix(),

@@ -9,17 +9,6 @@ import (
 	"github.com/graphql-go/graphql"
 )
 
-var DefaultType = graphql.NewObject(
-	graphql.ObjectConfig{
-		Name: "AdminUserType",
-		Fields: graphql.Fields{
-			"id": &graphql.Field{
-				Type: graphql.Int,
-			},
-		},
-	},
-)
-
 func InitType(object *graphql.Object) *graphql.Object {
 	var baseType = graphql.NewObject(
 		graphql.ObjectConfig{
@@ -98,6 +87,7 @@ func InitFields(input interface{}) graphql.Fields {
 	}
 	return graphqlFields
 }
+
 func getJSONTagName(tag, defaultValue string) string {
 	attrs := strings.Split(tag, ",")
 	var name string

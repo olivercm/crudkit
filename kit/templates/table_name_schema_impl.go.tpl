@@ -5,25 +5,25 @@ import (
 	"crudkit/framework/rpcs"
 	"crudkit/framework/types"
 	"crudkit/framework/utils"
-	api{{.Server}} "crudkit/server/api"
+	api{{.UCFirstServer}} "crudkit/server/api"
 	"github.com/graphql-go/graphql"
 	"time"
 )
 
-//rpc {{.LCFirstServer}}服务
-var {{.LCFirstServer}}Conn = rpcs.MustDial("{{.LCFirstServer}}")
+//rpc {{.Server}}服务
+var {{.Server}}Conn = rpcs.MustDial("{{.Server}}")
 
-func {{.LCFirstServer}}Get{{.Model}}ListField() *graphql.Field {
+func {{.Server}}Get{{.Model}}ListField() *graphql.Field {
 	return &graphql.Field{
-		Type: types.NewGraphQLListTypeFromRPCType(api{{.Server}}.{{.Model}}ListData{}),
-		Args: types.NewGraphQLArgsFromRPCType(api{{.Server}}.Get{{.Model}}ListReq{}),
+		Type: types.NewGraphQLListTypeFromRPCType(api{{.UCFirstServer}}.{{.Model}}ListData{}),
+		Args: types.NewGraphQLArgsFromRPCType(api{{.UCFirstServer}}.Get{{.Model}}ListReq{}),
 		Resolve: func(p graphql.ResolveParams) (interface{}, error) {
-			req := &api{{.Server}}.Get{{.Model}}ListReq{}
+			req := &api{{.UCFirstServer}}.Get{{.Model}}ListReq{}
 			err := utils.BindType(p.Args, req)
 			if err != nil {
 				return utils.BaseTypeErrors(err)
 			}
-			client := api{{.Server}}.New{{.Server}}ServiceClient({{.LCFirstServer}}Conn)
+			client := api{{.UCFirstServer}}.New{{.UCFirstServer}}ServiceClient({{.Server}}Conn)
 			ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
 			defer cancel()
 			r, err := client.Get{{.Model}}List(ctx, req)
@@ -35,17 +35,17 @@ func {{.LCFirstServer}}Get{{.Model}}ListField() *graphql.Field {
 	}
 }
 
-func {{.LCFirstServer}}Create{{.Model}}Field() *graphql.Field {
+func {{.Server}}Create{{.Model}}Field() *graphql.Field {
 	return &graphql.Field{
-		Type: types.NewGraphQLTypeFromRPCType(api{{.Server}}.Create{{.Model}}Resp{}),
-		Args: types.NewGraphQLArgsFromRPCType(api{{.Server}}.Create{{.Model}}Req{}),
+		Type: types.NewGraphQLTypeFromRPCType(api{{.UCFirstServer}}.Create{{.Model}}Resp{}),
+		Args: types.NewGraphQLArgsFromRPCType(api{{.UCFirstServer}}.Create{{.Model}}Req{}),
 		Resolve: func(p graphql.ResolveParams) (interface{}, error) {
-			req := &api{{.Server}}.Create{{.Model}}Req{}
+			req := &api{{.UCFirstServer}}.Create{{.Model}}Req{}
 			err := utils.BindType(p.Args, req)
 			if err != nil {
 				return utils.BaseTypeError(err)
 			}
-			client := api{{.Server}}.New{{.Server}}ServiceClient({{.LCFirstServer}}Conn)
+			client := api{{.UCFirstServer}}.New{{.UCFirstServer}}ServiceClient({{.Server}}Conn)
 			ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
 			defer cancel()
 			r, err := client.Create{{.Model}}(ctx, req)
@@ -57,17 +57,17 @@ func {{.LCFirstServer}}Create{{.Model}}Field() *graphql.Field {
 	}
 }
 
-func {{.LCFirstServer}}Update{{.Model}}Field() *graphql.Field {
+func {{.Server}}Update{{.Model}}Field() *graphql.Field {
 	return &graphql.Field{
-		Type: types.NewGraphQLTypeFromRPCType(api{{.Server}}.Update{{.Model}}Resp{}),
-		Args: types.NewGraphQLArgsFromRPCType(api{{.Server}}.Update{{.Model}}Req{}),
+		Type: types.NewGraphQLTypeFromRPCType(api{{.UCFirstServer}}.Update{{.Model}}Resp{}),
+		Args: types.NewGraphQLArgsFromRPCType(api{{.UCFirstServer}}.Update{{.Model}}Req{}),
 		Resolve: func(p graphql.ResolveParams) (interface{}, error) {
-			req := &api{{.Server}}.Update{{.Model}}Req{}
+			req := &api{{.UCFirstServer}}.Update{{.Model}}Req{}
 			err := utils.BindType(p.Args, req)
 			if err != nil {
 				return utils.BaseTypeError(err)
 			}
-			client := api{{.Server}}.New{{.Server}}ServiceClient({{.LCFirstServer}}Conn)
+			client := api{{.UCFirstServer}}.New{{.UCFirstServer}}ServiceClient({{.Server}}Conn)
 			ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
 			defer cancel()
 			r, err := client.Update{{.Model}}(ctx, req)
@@ -79,17 +79,17 @@ func {{.LCFirstServer}}Update{{.Model}}Field() *graphql.Field {
 	}
 }
 
-func {{.LCFirstServer}}Delete{{.Model}}Field() *graphql.Field {
+func {{.Server}}Delete{{.Model}}Field() *graphql.Field {
 	return &graphql.Field{
-		Type: types.NewGraphQLTypeFromRPCType(api{{.Server}}.Delete{{.Model}}Resp{}),
-		Args: types.NewGraphQLArgsFromRPCType(api{{.Server}}.Delete{{.Model}}Req{}),
+		Type: types.NewGraphQLTypeFromRPCType(api{{.UCFirstServer}}.Delete{{.Model}}Resp{}),
+		Args: types.NewGraphQLArgsFromRPCType(api{{.UCFirstServer}}.Delete{{.Model}}Req{}),
 		Resolve: func(p graphql.ResolveParams) (interface{}, error) {
-			req := &api{{.Server}}.Delete{{.Model}}Req{}
+			req := &api{{.UCFirstServer}}.Delete{{.Model}}Req{}
 			err := utils.BindType(p.Args, req)
 			if err != nil {
 				return utils.BaseTypeError(err)
 			}
-			client := api{{.Server}}.New{{.Server}}ServiceClient({{.LCFirstServer}}Conn)
+			client := api{{.UCFirstServer}}.New{{.UCFirstServer}}ServiceClient({{.Server}}Conn)
 			ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
 			defer cancel()
 			r, err := client.Delete{{.Model}}(ctx, req)
