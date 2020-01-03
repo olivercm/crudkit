@@ -1,6 +1,7 @@
 package main
 
 import (
+	"crudkit/framework/db"
 	"crudkit/framework/utils"
 	"crudkit/kit/model"
 	"github.com/labstack/gommon/log"
@@ -23,11 +24,24 @@ func main() {
 		return
 	}
 
-
-	//根据表名生成model
-
-
 	err = sweaters.GenerateStructure()
+	if err != nil {
+		log.Error(err)
+		return
+	}
+
+	//还需要调整
+	var metas []model.DbMeta
+	err = db.Master().Raw(`select column_name, data_type, column_key, extra 
+		from information_schema.columns
+		where table_schema = 'db'
+		and table_name = ?`, tableName).Find(&metas).Error
+	if err != nil {
+		log.Error(err)
+		return
+	}
+
+	err = sweaters.GenerateStruct(tableName, metas, true)
 	if err != nil {
 		log.Error(err)
 		return

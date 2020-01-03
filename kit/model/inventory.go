@@ -1,9 +1,11 @@
 package model
 
 import (
+	"crudkit/framework/utils"
 	"fmt"
 	"os"
 	"os/exec"
+	"strings"
 	"text/template"
 )
 
@@ -11,6 +13,7 @@ type Inventory struct {
 	UCFirstServer string
 	Model         string
 	Server        string
+	Fields        []string
 }
 
 //先清理原有的项目结构
@@ -147,4 +150,50 @@ func (i *Inventory) GenerateFile(templatePath, filePath string) error {
 		return err
 	}
 	return nil
+}
+
+//根据表名生成model
+func (i *Inventory) GenerateStruct(tableName string, columns []DbMeta, jsonAnnotation bool) error {
+	fields := generateFields(columns, jsonAnnotation)
+	i.Fields = fields
+
+	tableNameTemplatePath := "kit/templates/table_name.go.tpl"
+	tableNamePath := fmt.Sprintf("server/model/%s.go", tableName)
+
+	err := i.GenerateFile(tableNameTemplatePath, tableNamePath)
+	if err != nil {
+		return err
+	}
+	fmt.Printf("generate %s\n", tableNamePath)
+	return nil
+}
+
+func generateFields(columns []DbMeta, jsonAnnotation bool) []string {
+	var fields []string
+	var field = ""
+	for i, c := range columns {
+		columnName := c.ColumnName
+		dataType := utils.GetGolangType(c.DataType)
+		fieldName := utils.UpperCamel(columnName)
+
+		var annotations []string
+		if i == 0 {
+			annotations = append(annotations, fmt.Sprintf("gorm:\"column:%s;primary_key\"", columnName))
+		} else {
+			annotations = append(annotations, fmt.Sprintf("gorm:\"column:%s\"", columnName))
+		}
+
+		if jsonAnnotation == true {
+			annotations = append(annotations, fmt.Sprintf("json:\"%s\"", columnName))
+		}
+		if len(annotations) > 0 {
+			field = fmt.Sprintf("%s %s `%s`", fieldName, dataType,
+				strings.Join(annotations, " "))
+		} else {
+			field = fmt.Sprintf("%s %s", fieldName, dataType)
+		}
+
+		fields = append(fields, field)
+	}
+	return fields
 }
