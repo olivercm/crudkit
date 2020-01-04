@@ -19,10 +19,13 @@ func (s *CustomerService) GetUserList(ctx context.Context, req *pb.GetUserListRe
 	resp := new(pb.GetUserListResp)
 	for _, data := range datas {
 		resp.Result = append(resp.Result, &pb.UserListData{
-			Id:         data.Id,
-			Name:       data.Name,
-			Age:        data.Age,
-			CreateTime: data.CreateTime,
+		    Id: data.Id,
+            Name: data.Name,
+            Age: data.Age,
+            CreateTime: data.CreateTime,
+            UpdateTime: data.UpdateTime,
+            DeleteTime: data.DeleteTime,
+            
 		})
 	}
 	return resp, nil
@@ -30,8 +33,13 @@ func (s *CustomerService) GetUserList(ctx context.Context, req *pb.GetUserListRe
 
 func (s *CustomerService) CreateUser(ctx context.Context, req *pb.CreateUserReq) (*pb.CreateUserResp, error) {
 	e := &model.User{
-		Name: req.Name,
-		Age:  req.Age,
+		Id: req.Id,
+        Name: req.Name,
+        Age: req.Age,
+        CreateTime: req.CreateTime,
+        UpdateTime: req.UpdateTime,
+        DeleteTime: req.DeleteTime,
+        
 	}
 	_, err := s.dao.CreateUser(e)
 	if err != nil {
@@ -42,9 +50,13 @@ func (s *CustomerService) CreateUser(ctx context.Context, req *pb.CreateUserReq)
 
 func (s *CustomerService) UpdateUser(ctx context.Context, req *pb.UpdateUserReq) (*pb.UpdateUserResp, error) {
 	e := &model.User{
-		Id:   req.Id,
-		Name: req.Name,
-		Age:  req.Age,
+		Id: req.Id,
+        Name: req.Name,
+        Age: req.Age,
+        CreateTime: req.CreateTime,
+        UpdateTime: req.UpdateTime,
+        DeleteTime: req.DeleteTime,
+        
 	}
 	err := s.dao.UpdateUser(e)
 	if err != nil {

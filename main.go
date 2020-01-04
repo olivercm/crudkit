@@ -1,16 +1,39 @@
 package main
 
 import (
-	"crudkit/framework/db"
+	"crudkit/framework/mysql"
 	"crudkit/framework/utils"
 	"crudkit/kit/model"
+	"flag"
 	"github.com/labstack/gommon/log"
 )
 
-var tableName = "user"
-var serverName = "customer"
+type data struct {
+	ServerName string
+	User string
+	Password string
+	Address string
+	TableName string
+	Database string
+}
 
 func main() {
+
+	var d data
+	flag.StringVar(&d.ServerName, "serverName", "", "The serverName used for name of microservice.")
+	flag.StringVar(&d.User, "user", "", "The user used for mysql connection.")
+	flag.StringVar(&d.Password, "password", "", "The password used for mysql connection.")
+	flag.StringVar(&d.Address, "address", "", "The address used for mysql connection.")
+	flag.StringVar(&d.TableName, "tableName", "", "The tableName used for getting fields.")
+	flag.StringVar(&d.Database, "database", "", "The database used for inquire tableName.")
+	flag.Parse()
+
+	serverName := d.ServerName
+	user := d.User
+	password := d.Password
+	address := d.Address
+	tableName := d.TableName
+	database := d.Database
 
 	sweaters := &model.Inventory{
 		UCFirstServer: utils.UpperCaseFirst(serverName),
@@ -30,14 +53,19 @@ func main() {
 		return
 	}
 
-	//还需要调整
-	var metas []model.DbMeta
-	err = db.Master().Raw(`select column_name, data_type, column_key, extra 
-		from information_schema.columns
-		where table_schema = 'db'
-		and table_name = ?`, tableName).Find(&metas).Error
+	db, err := mysql.Master(user, password, address)
 	if err != nil {
 		log.Error(err)
+		return
+	}
+
+	var metas []model.DbMeta
+	err = db.Raw(`select column_name, data_type, column_key, extra
+		from information_schema.columns
+		where table_schema = ?
+		and table_name = ?`, database, tableName).Find(&metas).Error
+	if len(metas) == 0 {
+		log.Error("metas are empty; incorrect table_schema or table_name")
 		return
 	}
 

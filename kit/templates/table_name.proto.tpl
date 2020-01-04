@@ -19,15 +19,13 @@ message Get{{.Model}}ListResp {
 }
 
 message {{.Model}}ListData {
-    int64 id = 1;
-    string name = 2;
-    int64 age = 3;
-    int64 createTime = 4;
+    {{range .ProtoFields}}{{.}}
+    {{end}}
 }
 
 message Create{{.Model}}Req {
-    string name = 1;
-    int64 age = 2;
+    {{range .ProtoFields}}{{.}}
+    {{end}}
 }
 
 message Create{{.Model}}Resp {
@@ -35,9 +33,8 @@ message Create{{.Model}}Resp {
 }
 
 message Update{{.Model}}Req {
-    int64 id = 1;
-    string name = 2;
-    int64 age = 3;
+    {{range .ProtoFields}}{{.}}
+    {{end}}
 }
 
 message Update{{.Model}}Resp {

@@ -23,11 +23,19 @@ message UserListData {
     string name = 2;
     int64 age = 3;
     int64 createTime = 4;
+    int64 updateTime = 5;
+    int64 deleteTime = 6;
+    
 }
 
 message CreateUserReq {
-    string name = 1;
-    int64 age = 2;
+    int64 id = 1;
+    string name = 2;
+    int64 age = 3;
+    int64 createTime = 4;
+    int64 updateTime = 5;
+    int64 deleteTime = 6;
+    
 }
 
 message CreateUserResp {
@@ -38,6 +46,10 @@ message UpdateUserReq {
     int64 id = 1;
     string name = 2;
     int64 age = 3;
+    int64 createTime = 4;
+    int64 updateTime = 5;
+    int64 deleteTime = 6;
+    
 }
 
 message UpdateUserResp {

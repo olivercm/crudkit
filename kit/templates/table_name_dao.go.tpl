@@ -30,9 +30,8 @@ func (*{{.Model}}Dao) Update{{.Model}}(e *model.{{.Model}}) error {
 		Model(&model.{{.Model}}{}).
 		Where("id = ?", e.Id).
 		Update(map[string]interface{}{
-			"name":        e.Name,
-			"age":         e.Age,
-			"update_time": time.Now().Unix(),
+			{{range .ModelDaoFields}}{{.}}
+            {{end}}
 		}).Error
 	return err
 }

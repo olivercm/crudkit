@@ -30,9 +30,13 @@ func (*UserDao) UpdateUser(e *model.User) error {
 		Model(&model.User{}).
 		Where("id = ?", e.Id).
 		Update(map[string]interface{}{
-			"name":        e.Name,
-			"age":         e.Age,
-			"update_time": time.Now().Unix(),
+			"id": e.Id,
+            "name": e.Name,
+            "age": e.Age,
+            "create_time": time.Now().Unix(),
+            "update_time": time.Now().Unix(),
+            "delete_time": time.Now().Unix(),
+            
 		}).Error
 	return err
 }

@@ -10,12 +10,7 @@ var master struct {
 	debug bool
 }
 
-/*
-并不能获取数据库信息
-这个工具的目的是自动生成对应结构的crud代码
- */
+//并不能执行，只是为了生成的代码不报错
 func Master() *gorm.DB {
 	return master.db.Load().(*gorm.DB).New()
 }
-
-

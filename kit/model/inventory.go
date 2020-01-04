@@ -3,6 +3,9 @@ package model
 import (
 	"crudkit/framework/utils"
 	"fmt"
+	"go/ast"
+	"go/parser"
+	"go/token"
 	"os"
 	"os/exec"
 	"strings"
@@ -10,10 +13,14 @@ import (
 )
 
 type Inventory struct {
-	UCFirstServer string
-	Model         string
-	Server        string
-	Fields        []string
+	UCFirstServer     string
+	Model             string
+	Server            string
+	Fields            []string
+	ProtoFields       []string
+	ModelDaoFields    []string
+	ServiceFields     []string
+	ServiceListFields []string
 }
 
 //先清理原有的项目结构
@@ -59,7 +66,7 @@ func (i *Inventory) GenerateDao() error {
 	daoTemplatePath := "kit/templates/dao.go.tpl"
 	daoPath := fmt.Sprintf("server/dao/dao.go")
 
-	err := i.GenerateFile(daoTemplatePath, daoPath)
+	err := i.generateFile(daoTemplatePath, daoPath)
 	if err != nil {
 		return err
 	}
@@ -72,7 +79,25 @@ func (i *Inventory) GenerateTableNameDao(tableName string) error {
 	tableNameDaoTemplatePath := "kit/templates/table_name_dao.go.tpl"
 	tableNameDaoPath := fmt.Sprintf("server/dao/%s_dao.go", tableName)
 
-	err := i.GenerateFile(tableNameDaoTemplatePath, tableNameDaoPath)
+	tableNamePath := fmt.Sprintf("server/model/%s.go", tableName)
+	i.ModelDaoFields = getFields(tableNamePath, func(s []*ast.Field) []string {
+		fields := make([]string, 0)
+		var field string
+		for _, tmpField := range s {
+			name := tmpField.Names[0].Name
+			if utils.LowerCase(name) != "create_time" &&
+				utils.LowerCase(name) != "update_time" &&
+				utils.LowerCase(name) != "delete_time" {
+				field = fmt.Sprintf("\"%s\": e.%s,", utils.LowerCase(name), name)
+			} else {
+				field = fmt.Sprintf("\"%s\": time.Now().Unix(),", utils.LowerCase(name))
+			}
+			fields = append(fields, field)
+		}
+		return fields
+	})
+
+	err := i.generateFile(tableNameDaoTemplatePath, tableNameDaoPath)
 	if err != nil {
 		return err
 	}
@@ -85,7 +110,28 @@ func (i *Inventory) GenerateTableNameService(tableName string) error {
 	tableNameServiceTemplatePath := "kit/templates/table_name_service.go.tpl"
 	tableNameServicePath := fmt.Sprintf("server/service/%s_service.go", tableName)
 
-	err := i.GenerateFile(tableNameServiceTemplatePath, tableNameServicePath)
+	tableNamePath := fmt.Sprintf("server/model/%s.go", tableName)
+	i.ServiceFields = getFields(tableNamePath, func(s []*ast.Field) []string {
+		fields := make([]string, 0)
+		for _, tmpField := range s {
+			name := tmpField.Names[0].Name
+			field := fmt.Sprintf("%s: req.%s,", name, name)
+			fields = append(fields, field)
+		}
+		return fields
+	})
+
+	i.ServiceListFields = getFields(tableNamePath, func(s []*ast.Field) []string {
+		fields := make([]string, 0)
+		for _, tmpField := range s {
+			name := tmpField.Names[0].Name
+			field := fmt.Sprintf("%s: data.%s,", name, name)
+			fields = append(fields, field)
+		}
+		return fields
+	})
+
+	err := i.generateFile(tableNameServiceTemplatePath, tableNameServicePath)
 	if err != nil {
 		return err
 	}
@@ -98,7 +144,7 @@ func (i *Inventory) GenerateTableNameSchemaImpl(tableName string) error {
 	tableNameSchemaImplTemplatePath := "kit/templates/table_name_schema_impl.go.tpl"
 	tableNameSchemaImplPath := fmt.Sprintf("client/schemas/%s_schema_impl.go", tableName)
 
-	err := i.GenerateFile(tableNameSchemaImplTemplatePath, tableNameSchemaImplPath)
+	err := i.generateFile(tableNameSchemaImplTemplatePath, tableNameSchemaImplPath)
 	if err != nil {
 		return err
 	}
@@ -108,10 +154,21 @@ func (i *Inventory) GenerateTableNameSchemaImpl(tableName string) error {
 
 //根据模版生成{table_name}.proto
 func (i *Inventory) GenerateTableNameProto(tableName string) error {
-	tableNameProtoTemplatePath := "kit/templates/table_name_proto.go.tpl"
+	tableNameProtoTemplatePath := "kit/templates/table_name.proto.tpl"
 	tableNameProtoPath := fmt.Sprintf("server/api/%s.proto", tableName)
 
-	err := i.GenerateFile(tableNameProtoTemplatePath, tableNameProtoPath)
+	tableNamePath := fmt.Sprintf("server/model/%s.go", tableName)
+	i.ProtoFields = getFields(tableNamePath, func(s []*ast.Field) []string {
+		fields := make([]string, 0)
+		for i, tmpField := range s {
+			name := tmpField.Names[0].Name
+			field := fmt.Sprintf("%s %s = %d;", tmpField.Type, utils.LowerCaseFirst(name), i+1)
+			fields = append(fields, field)
+		}
+		return fields
+	})
+
+	err := i.generateFile(tableNameProtoTemplatePath, tableNameProtoPath)
 	if err != nil {
 		return err
 	}
@@ -133,7 +190,7 @@ func (i *Inventory) GeneratePbGo(tableName string) error {
 	return nil
 }
 
-func (i *Inventory) GenerateFile(templatePath, filePath string) error {
+func (i *Inventory) generateFile(templatePath, filePath string) error {
 	tmpl, err := template.ParseFiles(templatePath)
 	if err != nil {
 		return err
@@ -160,7 +217,7 @@ func (i *Inventory) GenerateStruct(tableName string, columns []DbMeta, jsonAnnot
 	tableNameTemplatePath := "kit/templates/table_name.go.tpl"
 	tableNamePath := fmt.Sprintf("server/model/%s.go", tableName)
 
-	err := i.GenerateFile(tableNameTemplatePath, tableNamePath)
+	err := i.generateFile(tableNameTemplatePath, tableNamePath)
 	if err != nil {
 		return err
 	}
@@ -168,6 +225,7 @@ func (i *Inventory) GenerateStruct(tableName string, columns []DbMeta, jsonAnnot
 	return nil
 }
 
+//生成struct fields
 func generateFields(columns []DbMeta, jsonAnnotation bool) []string {
 	var fields []string
 	var field = ""
@@ -197,3 +255,32 @@ func generateFields(columns []DbMeta, jsonAnnotation bool) []string {
 	}
 	return fields
 }
+
+type convert func([]*ast.Field) []string
+
+//根据传入fn生成不同的fields
+func getFields(filePath string, fn convert) []string {
+	fields := make([]string, 0)
+	src := utils.ReadFile(filePath)
+
+	fileSet := token.NewFileSet()
+	file, err := parser.ParseFile(fileSet, "fields", src, parser.ParseComments)
+	if err != nil {
+		panic(err)
+	}
+
+	ast.Inspect(file, func(x ast.Node) bool {
+		s, ok := x.(*ast.StructType)
+		if !ok {
+			return true
+		}
+
+		fields = fn(s.Fields.List)
+		return false
+	})
+	return fields
+}
+
+
+
+

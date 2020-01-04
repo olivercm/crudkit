@@ -39,6 +39,21 @@ func UpperCamel(name string) string {
 	return sb.String()
 }
 
+func LowerCase(name string) string {
+	sb := strings.Builder{}
+	for i := 0; i < len(name); i++ {
+		c := name[i]
+		if 'A' <= c && c <= 'Z' {
+			c = c - 'A' + 'a'
+			if i > 0 {
+				sb.WriteByte('_')
+			}
+		}
+		sb.WriteByte(c)
+	}
+	return sb.String()
+}
+
 
 
 

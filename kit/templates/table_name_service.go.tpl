@@ -19,10 +19,8 @@ func (s *{{.UCFirstServer}}Service) Get{{.Model}}List(ctx context.Context, req *
 	resp := new(pb.Get{{.Model}}ListResp)
 	for _, data := range datas {
 		resp.Result = append(resp.Result, &pb.{{.Model}}ListData{
-			Id:         data.Id,
-			Name:       data.Name,
-			Age:        data.Age,
-			CreateTime: data.CreateTime,
+		    {{range .ServiceListFields}}{{.}}
+            {{end}}
 		})
 	}
 	return resp, nil
@@ -30,8 +28,8 @@ func (s *{{.UCFirstServer}}Service) Get{{.Model}}List(ctx context.Context, req *
 
 func (s *{{.UCFirstServer}}Service) Create{{.Model}}(ctx context.Context, req *pb.Create{{.Model}}Req) (*pb.Create{{.Model}}Resp, error) {
 	e := &model.{{.Model}}{
-		Name: req.Name,
-		Age:  req.Age,
+		{{range .ServiceFields}}{{.}}
+        {{end}}
 	}
 	_, err := s.dao.Create{{.Model}}(e)
 	if err != nil {
@@ -42,9 +40,8 @@ func (s *{{.UCFirstServer}}Service) Create{{.Model}}(ctx context.Context, req *p
 
 func (s *{{.UCFirstServer}}Service) Update{{.Model}}(ctx context.Context, req *pb.Update{{.Model}}Req) (*pb.Update{{.Model}}Resp, error) {
 	e := &model.{{.Model}}{
-		Id:   req.Id,
-		Name: req.Name,
-		Age:  req.Age,
+		{{range .ServiceFields}}{{.}}
+        {{end}}
 	}
 	err := s.dao.Update{{.Model}}(e)
 	if err != nil {
