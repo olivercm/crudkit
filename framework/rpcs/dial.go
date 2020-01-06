@@ -2,8 +2,8 @@ package rpcs
 
 import (
 	"fmt"
-	"github.com/labstack/gommon/log"
 	"google.golang.org/grpc"
+	"log"
 	"time"
 )
 

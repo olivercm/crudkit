@@ -48,12 +48,12 @@ func BaseTypeOK(data interface{}) (model.BaseType, error) {
 	return baseType, nil
 }
 
-func BaseTypesManyOK(datas interface{}, totalNum, curretPage int64) ([]model.BaseType, error) {
+func BaseTypesManyOK(datas interface{}, totalNum, currentPage int64) ([]model.BaseType, error) {
 	baseType := model.BaseType{
 		Success: true,
 		Datas:   datas,
 		Total:   int(totalNum),
-		Current: int(curretPage),
+		Current: int(currentPage),
 	}
 	return []model.BaseType{baseType}, nil
 }

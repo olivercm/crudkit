@@ -2,9 +2,9 @@ package service
 
 import (
 	"context"
-	pb "crudkit/server/api"
-	"crudkit/server/dao"
-	"crudkit/server/model"
+	pb "crudkit/crud/server/api"
+	"crudkit/crud/server/dao"
+	"crudkit/crud/server/model"
 )
 
 type {{.UCFirstServer}}Service struct {
@@ -12,7 +12,7 @@ type {{.UCFirstServer}}Service struct {
 }
 
 func (s *{{.UCFirstServer}}Service) Get{{.Model}}List(ctx context.Context, req *pb.Get{{.Model}}ListReq) (*pb.Get{{.Model}}ListResp, error) {
-	datas, err := s.dao.Get{{.Model}}List(req.Current, req.PageSize)
+	datas, err := s.dao.Get{{.Model}}List(req.CurrentPage, req.PageSize)
 	if err != nil {
 		return nil, err
 	}

@@ -2,18 +2,18 @@ package dao
 
 import (
 	"crudkit/framework/db"
-	"crudkit/server/model"
+	"crudkit/crud/server/model"
 	"time"
 )
 
 type {{.Model}}Dao struct {
 }
 
-func (*{{.Model}}Dao) Get{{.Model}}List(page, pageSize int64) ([]*model.{{.Model}}, error) {
+func (*{{.Model}}Dao) Get{{.Model}}List(currentPage, pageSize int64) ([]*model.{{.Model}}, error) {
 	var ret []*model.{{.Model}}
 	err := db.Master().
 		Where("delete_time = 0").
-		Offset((page - 1) * pageSize).Limit(pageSize).
+		Offset((currentPage - 1) * pageSize).Limit(pageSize).
 		Find(&ret).
 		Error
 	return ret, err

@@ -5,7 +5,7 @@ import (
 	"crudkit/framework/utils"
 	"crudkit/kit/model"
 	"flag"
-	"github.com/labstack/gommon/log"
+	"log"
 )
 
 type data struct {
@@ -43,19 +43,19 @@ func main() {
 
 	err := sweaters.CleanStructure()
 	if err != nil {
-		log.Error(err)
+		log.Print(err)
 		return
 	}
 
 	err = sweaters.GenerateStructure()
 	if err != nil {
-		log.Error(err)
+		log.Print(err)
 		return
 	}
 
 	db, err := mysql.Master(user, password, address)
 	if err != nil {
-		log.Error(err)
+		log.Print(err)
 		return
 	}
 
@@ -65,49 +65,49 @@ func main() {
 		where table_schema = ?
 		and table_name = ?`, database, tableName).Find(&metas).Error
 	if len(metas) == 0 {
-		log.Error("metas are empty; incorrect table_schema or table_name")
+		log.Print("metas are empty; incorrect table_schema or table_name")
 		return
 	}
 
 	err = sweaters.GenerateStruct(tableName, metas, true)
 	if err != nil {
-		log.Error(err)
+		log.Print(err)
 		return
 	}
 
 	err = sweaters.GenerateDao()
 	if err != nil {
-		log.Error(err)
+		log.Print(err)
 		return
 	}
 
 	err = sweaters.GenerateTableNameDao(tableName)
 	if err != nil {
-		log.Error(err)
+		log.Print(err)
 		return
 	}
 
 	err = sweaters.GenerateTableNameService(tableName)
 	if err != nil {
-		log.Error(err)
+		log.Print(err)
 		return
 	}
 
 	err = sweaters.GenerateTableNameSchemaImpl(tableName)
 	if err != nil {
-		log.Error(err)
+		log.Print(err)
 		return
 	}
 
 	err = sweaters.GenerateTableNameProto(tableName)
 	if err != nil {
-		log.Error(err)
+		log.Print(err)
 		return
 	}
 
 	err = sweaters.GeneratePbGo(tableName)
 	if err != nil {
-		log.Error(err)
+		log.Print(err)
 		return
 	}
 }

@@ -5,7 +5,7 @@ import (
 	"crudkit/framework/rpcs"
 	"crudkit/framework/types"
 	"crudkit/framework/utils"
-	api{{.UCFirstServer}} "crudkit/server/api"
+	api{{.UCFirstServer}} "crudkit/crud/server/api"
 	"github.com/graphql-go/graphql"
 	"time"
 )
@@ -30,7 +30,7 @@ func {{.Server}}Get{{.Model}}ListField() *graphql.Field {
 			if err != nil {
 				return utils.BaseTypeErrors(err)
 			}
-			return utils.BaseTypesManyOK(r.Result, int64(len(r.Result)), 1)
+			return utils.BaseTypesManyOK(r.Result, int64(len(r.Result)), req.CurrentPage)
 		},
 	}
 }

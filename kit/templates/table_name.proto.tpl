@@ -10,7 +10,7 @@ service {{.UCFirstServer}}Service {
 }
 
 message Get{{.Model}}ListReq {
-    int64 current = 1;
+    int64 currentPage = 1;
     int64 pageSize = 2;
 }
 
