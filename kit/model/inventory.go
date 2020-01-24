@@ -71,6 +71,12 @@ func (i *Inventory) GenerateDao() error {
 		return err
 	}
 	fmt.Printf("generate %s\n", daoPath)
+
+	err = i.formatGeneratedGo(daoPath)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
@@ -102,6 +108,12 @@ func (i *Inventory) GenerateTableNameDao(tableName string) error {
 		return err
 	}
 	fmt.Printf("generate %s\n", tableNameDaoPath)
+
+	err = i.formatGeneratedGo(tableNameDaoPath)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
@@ -136,6 +148,12 @@ func (i *Inventory) GenerateTableNameService(tableName string) error {
 		return err
 	}
 	fmt.Printf("generate %s\n", tableNameServicePath)
+
+	err = i.formatGeneratedGo(tableNameServicePath)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
@@ -149,6 +167,12 @@ func (i *Inventory) GenerateTableNameSchemaImpl(tableName string) error {
 		return err
 	}
 	fmt.Printf("generate %s\n", tableNameSchemaImplPath)
+
+	err = i.formatGeneratedGo(tableNameSchemaImplPath)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
@@ -173,6 +197,7 @@ func (i *Inventory) GenerateTableNameProto(tableName string) error {
 		return err
 	}
 	fmt.Printf("generate %s\n", tableNameProtoPath)
+
 	return nil
 }
 
@@ -222,6 +247,12 @@ func (i *Inventory) GenerateStruct(tableName string, columns []DbMeta, jsonAnnot
 		return err
 	}
 	fmt.Printf("generate %s\n", tableNamePath)
+
+	err = i.formatGeneratedGo(tableNamePath)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
@@ -281,6 +312,16 @@ func getFields(filePath string, fn convert) []string {
 	return fields
 }
 
+//格式化go文件
+func (i *Inventory) formatGeneratedGo(filePath string) error {
+	cmd := exec.Command("bash", "-c", fmt.Sprintf("go fmt %s", filePath))
+	_, err := cmd.Output()
+	if err != nil {
+		return err
+	}
+	//fmt.Printf("exec: %s", out)
 
-
-
+	fmt.Printf("format %s\n", filePath)
+	fmt.Println()
+	return nil
+}

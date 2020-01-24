@@ -19,6 +19,12 @@ func GetGolangType(dataType string) string {
 
 	case "bool":
 		return "bool"
+
+	case "date":
+		return "string"
+
+	case "timestamp":
+		return "int64"
 	}
 
 	return "unknown"
