@@ -30,7 +30,7 @@ func {{.Server}}Get{{.Model}}ListField() *graphql.Field {
 			if err != nil {
 				return utils.BaseTypeErrors(err)
 			}
-			return utils.BaseTypesManyOK(r.Result, int64(len(r.Result)), req.CurrentPage)
+			return utils.BaseTypesManyOK(r.Result, r.Total, req.CurrentPage)
 		},
 	}
 }

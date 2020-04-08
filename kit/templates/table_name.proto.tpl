@@ -16,6 +16,7 @@ message Get{{.Model}}ListReq {
 
 message Get{{.Model}}ListResp {
     repeated {{.Model}}ListData result = 1;
+    int64 total = 2;
 }
 
 message {{.Model}}ListData {

@@ -12,7 +12,7 @@ type {{.Model}}Dao struct {
 func (*{{.Model}}Dao) Get{{.Model}}List(currentPage, pageSize int64) ([]*model.{{.Model}}, error) {
 	var ret []*model.{{.Model}}
 	err := db.Master().
-		Where("delete_time = 0").
+		Where("del_flag = 0").
 		Offset((currentPage - 1) * pageSize).Limit(pageSize).
 		Find(&ret).
 		Error
@@ -41,7 +41,17 @@ func (*{{.Model}}Dao) Delete{{.Model}}ById(id int64) error {
 		Model(&model.{{.Model}}{}).
 		Where("id = ?", id).
 		Update(map[string]interface{}{
-			"delete_time": time.Now().Unix(),
+			"del_flag": 1,
 		}).
 		Error
+}
+
+func (*{{.Model}}Dao) Count{{.Model}}() (int, error) {
+	count := 0
+	sql := `select count(*) from {{.Model}} where del_flag = 0 `
+	err := db.Master().Raw(sql).Count(&count).Error
+	if err != nil {
+		return 0, err
+	}
+	return count, nil
 }

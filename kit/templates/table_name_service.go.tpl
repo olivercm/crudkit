@@ -23,6 +23,11 @@ func (s *{{.UCFirstServer}}Service) Get{{.Model}}List(ctx context.Context, req *
             {{end}}
 		})
 	}
+	total, err := s.dao.Count{{.Model}}()
+	if err != nil {
+        return nil, err
+    }
+	resp.Total = int64(total)
 	return resp, nil
 }
 
